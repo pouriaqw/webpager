@@ -3,33 +3,33 @@
         <title>ESP Web Server</title> 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
-            body {{
+            body {
                 font-family: 'Arial', sans-serif;
                 background: #f4f4f9;
                 margin: 0;
                 padding: 0;
                 color: #333;
                 text-align: center;
-            }}
-            h1 {{
+            }
+            h1 {
                 color: #333;
                 background: #e7f0ff;
                 padding: 20px;
                 border-bottom: 2px solid #ddd;
-            }}
-            .container {{
+            }
+            .container {
                 max-width: 800px;
                 margin: 20px auto;
                 padding: 20px;
                 background: #fff;
                 border-radius: 10px;
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            }}
-            p {{
+            }
+            p {
                 font-size: 1.2rem;
                 margin: 20px 0;
-            }}
-            .button {{
+            }
+            .button {
                 display: inline-block;
                 background-color: #007bff;
                 border: none;
@@ -41,12 +41,12 @@
                 margin: 10px;
                 cursor: pointer;
                 transition: background-color 0.3s, transform 0.2s;
-            }}
-            .button:hover {{
+            }
+            .button:hover {
                 background-color: #0056b3;
                 transform: scale(1.05);
-            }}
-            input[type="number"] {{
+            }
+            input[type="number"] {
                 font-size: 1.2rem;
                 padding: 10px;
                 margin: 10px 0;
@@ -54,83 +54,83 @@
                 border: 2px solid #ddd;
                 border-radius: 5px;
                 box-sizing: border-box;
-            }}
-            #progress-bar-container {{
+            }
+            #progress-bar-container {
                 width: 100%;
                 background-color: #ddd;
                 border-radius: 25px;
                 margin: 20px 0;
                 overflow: hidden;
-            }}
-            #progress-bar {{
+            }
+            #progress-bar {
                 width: 0%;
                 height: 30px;
                 background-color: #28a745;
                 border-radius: 25px;
                 transition: width 1s linear;
-            }}
-            #status {{
+            }
+            #status {
                 font-size: 1.2rem;
                 color: #28a745;
                 margin-top: 20px;
                 font-weight: bold;
-            }}
-            #last-action {{
+            }
+            #last-action {
                 font-size: 1.2rem;
                 color: #333;
                 margin-top: 10px;
-            }}
+            }
         </style>
         <script>
-            function startProgress(duration) {{
+            function startProgress(duration) {
                 var bar = document.getElementById("progress-bar");
                 var status = document.getElementById("status");
                 bar.style.width = "0%";
                 status.innerHTML = "";  // Clear previous status
                 var step = 100 / duration;  // Calculate the step based on duration
                 var width = 0;
-                var interval = setInterval(function() {{
-                    if (width >= 100) {{
+                var interval = setInterval(function() {
+                    if (width >= 100) {
                         clearInterval(interval);
                         status.innerHTML = "Complete";  // Update status once complete
-                    }} else {{
+                    } else {
                         width += step;
                         bar.style.width = width + "%";
-                    }}
-                }}, 1000);
-            }}
+                    }
+                }, 1000);
+            }
 
-            function handleSubmit(event) {{
+            function handleSubmit(event) {
                 event.preventDefault();  // Prevent form submission
                 var sleepTime = document.getElementById('sleep_time').value;
 
                 // Confirmation dialog
-                if (confirm("Are you sure you want to start the feeding sequence?")) {{
+                if (confirm("Are you sure you want to start the feeding sequence?")) {
                     var totalDuration = 4 + parseInt(sleepTime);  // Total duration = 4s (2s forward + 2s backward) + sleep time
                     startProgress(totalDuration);  // Update progress bar duration
 
                     // Make a request to the server to start the motor actions
                     fetch('/start?sleep_time=' + sleepTime)
                     .then(response => response.text())
-                    .then(data => {{
+                    .then(data => {
                         console.log("Motor action completed.");
-                    }});
-                }} else {{
+                    });
+                } else {
                     console.log("Feeding sequence was canceled.");
-                }}
-            }}
+                }
+            }
 
-            function updateStatus() {{
+            function updateStatus() {
                 fetch('/status')
                 .then(response => response.text())
-                .then(data => {{
+                .then(data => {
                     var statusElement = document.getElementById("status");
                     var lastActionElement = document.getElementById("last-action");
                     var parts = data.split('|');
                     statusElement.innerHTML = parts[0];
                     lastActionElement.innerHTML = "Last action: " + parts[1];
-                }});
-            }}
+                });
+            }
 
             setInterval(updateStatus, 5000);  // Update status every 5 seconds
         </script>
